@@ -35,7 +35,7 @@
 
     &.playing {
       .ring {
-        animation: fadeInOut 27s ease-in-out infinite; // Adjusted total duration to 27s
+        animation: fadeInOut 27s linear infinite; // Use 'linear' for even expansion
       }
     }
 
@@ -44,6 +44,7 @@
       border-radius: 50%;
       width: 100px; // Initial size for testing
       height: 100px; // Initial size for testing
+      // can we implement a random range of border sizes, between 3 and 9 px?
       border: 8px solid; // Creates the ring shape
       border-color: rgba(0, 0, 255, 0.7); // Apply the blue color to the border
       background-color: transparent; // Ensure the center is transparent
@@ -56,7 +57,6 @@
     }
 
     @for $i from 1 through 3 {
-      // Adjusted to loop only 3 times
       .ring:nth-child(#{$i}) {
         animation-delay: #{random(
             27
@@ -71,16 +71,12 @@
       transform: scale(0.8);
     }
     37.04% {
-      opacity: 1; // Longer fade-in time (10 seconds of 27 seconds)
-      transform: scale(1.1);
-    }
-    51.85% {
-      opacity: 1; // Shorter time at full opacity
-      transform: scale(1.1);
+      opacity: 0.9; // Longer fade-in time (10 seconds of 27 seconds)
+      transform: scale(1.4); // Continuous scaling without pausing
     }
     100% {
-      opacity: 0; // Fade out over the remaining time
-      transform: scale(1.4);
+      opacity: 0; // Fade out while continuing to scale
+      transform: scale(2);
       filter: blur(10px);
     }
   }
