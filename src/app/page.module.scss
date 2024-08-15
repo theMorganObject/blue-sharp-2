@@ -1,0 +1,87 @@
+.watercolorContainer {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #000; // Dark background
+
+  button {
+    z-index: 1;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    background-color: #fff;
+    color: #000;
+    border-radius: 5px;
+  }
+
+  .watercolorRings {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &.playing {
+      .ring {
+        animation: fadeInOut 27s ease-in-out infinite; // Adjusted total duration to 27s
+      }
+    }
+
+    .ring {
+      position: absolute;
+      border-radius: 50%;
+      width: 100px; // Initial size for testing
+      height: 100px; // Initial size for testing
+      border: 8px solid; // Creates the ring shape
+      border-color: rgba(0, 0, 255, 0.7); // Apply the blue color to the border
+      background-color: transparent; // Ensure the center is transparent
+      box-sizing: border-box;
+      filter: blur(5px);
+      opacity: 0;
+      animation-fill-mode: forwards;
+      animation-name: fadeInOut;
+      transform: translate(-50%, -50%);
+    }
+
+    @for $i from 1 through 3 {
+      // Adjusted to loop only 3 times
+      .ring:nth-child(#{$i}) {
+        animation-delay: #{random(
+            27
+          )}s; // Random delay within the 27-second range
+      }
+    }
+  }
+
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    37.04% {
+      opacity: 1; // Longer fade-in time (10 seconds of 27 seconds)
+      transform: scale(1.1);
+    }
+    51.85% {
+      opacity: 1; // Shorter time at full opacity
+      transform: scale(1.1);
+    }
+    100% {
+      opacity: 0; // Fade out over the remaining time
+      transform: scale(1.4);
+      filter: blur(10px);
+    }
+  }
+}
