@@ -2,47 +2,16 @@
 
 import React, { useRef, useState } from 'react';
 import styles from './page.module.scss';
+import {
+  bluePalette,
+  indigoPalette,
+  cyanPalette,
+  combinedPalette,
+} from '../../util/palettes';
 
 export default function Home() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-
-  const bluePalette: string[] = [
-    '#a5d8ff',
-    '#74c0fc',
-    '#4dabf7',
-    '#339af0',
-    '#228be6',
-    '#1971c2',
-    '#1864ab',
-    '#0f609b',
-    '#0a3f78',
-  ];
-
-  const indigoPalette: string[] = [
-    '#91a7ff',
-    '#748ffc',
-    '#5c7cfa',
-    '#4c6ef5',
-    '#4263eb',
-    '#3b5bdb',
-    '#364fc7',
-    '#2e3b94',
-    '#1e2871',
-  ];
-
-  const cyanPalette: string[] = [
-    '#99e9f2',
-    '#66d9e8',
-    '#15aabf',
-    '#1098ad',
-    '#0c8599',
-    '#0b7285',
-    '#085d6d',
-    '#064852',
-  ];
-
-  const combinedPalette = [...bluePalette, ...indigoPalette, ...cyanPalette];
 
   const generateRandomPosition = () => {
     const top = Math.floor(Math.random() * 100);
@@ -63,58 +32,64 @@ export default function Home() {
     return palette[Math.floor(Math.random() * palette.length)];
   };
 
-  const rings = Array.from({ length: 3 }, (_, i) => {
-    const position = generateRandomPosition();
-    const size = generateRandomSize();
-    const borderWidth = generateRandomBorderWidth();
-    const blueColor = generateRandomColor(bluePalette);
-    const indigoColor = generateRandomColor(indigoPalette);
-    const cyanColor = generateRandomColor(cyanPalette);
-    const dropShadowColor = generateRandomColor(combinedPalette);
-    const animationName = `fadeInOut-${i}`;
+  const renderRings = () => {
+    return Array.from({ length: 3 }, (_, i) => {
+      const position = generateRandomPosition();
+      const size = generateRandomSize();
+      const borderWidth = generateRandomBorderWidth();
+      const blueColor = generateRandomColor(bluePalette);
+      const indigoColor = generateRandomColor(indigoPalette);
+      const cyanColor = generateRandomColor(cyanPalette);
+      const dropShadowColor = generateRandomColor(combinedPalette);
+      const animationName = `fadeInOut-${i}-${Math.random()}`; // Add random element to animation name
 
-    const style = {
-      ...position,
-      ...size,
-      borderWidth: `${borderWidth}px`,
-      animationName,
-      animationTimingFunction: 'linear',
-      animationDuration: '27s',
-      animationIterationCount: 'infinite',
-      animationFillMode: 'forwards',
-      borderColor: blueColor,
-    };
+      const style = {
+        ...position,
+        ...size,
+        borderWidth: `${borderWidth}px`,
+        animationName,
+        animationTimingFunction: 'linear',
+        animationDuration: '4s',
+        animationIterationCount: 'infinite',
+        animationFillMode: 'forwards',
+        borderColor: blueColor,
+      };
 
-    return (
-      <div key={i} className={styles.ring} style={style}>
-        <style jsx>{`
-          @keyframes ${animationName} {
-            0% {
-              opacity: 0;
-              transform: scale(0.8);
-              border-color: ${blueColor};
-              filter: blur(5px) drop-shadow(0 0 0 ${dropShadowColor});
+      return (
+        <div
+          key={`${i}-${Math.random()}`}
+          className={styles.ring}
+          style={style}
+        >
+          <style jsx>{`
+            @keyframes ${animationName} {
+              0% {
+                opacity: 0;
+                transform: scale(0.8);
+                border-color: ${blueColor};
+                filter: blur(5px) drop-shadow(0 0 0 ${dropShadowColor});
+              }
+              37.04% {
+                opacity: 1;
+                transform: scale(1.4);
+                border-color: ${indigoColor};
+                filter: blur(5px) drop-shadow(0 0 0 ${dropShadowColor});
+              }
+              50% {
+                filter: blur(5px) drop-shadow(0 0 10px ${dropShadowColor});
+              }
+              100% {
+                opacity: 0;
+                transform: scale(2);
+                border-color: ${cyanColor};
+                filter: blur(10px) drop-shadow(0 0 25px ${dropShadowColor});
+              }
             }
-            37.04% {
-              opacity: 1;
-              transform: scale(1.4);
-              border-color: ${indigoColor};
-              filter: blur(5px) drop-shadow(0 0 0 ${dropShadowColor});
-            }
-            50% {
-              filter: blur(5px) drop-shadow(0 0 10px ${dropShadowColor});
-            }
-            100% {
-              opacity: 0;
-              transform: scale(2);
-              border-color: ${cyanColor};
-              filter: blur(10px) drop-shadow(0 0 25px ${dropShadowColor});
-            }
-          }
-        `}</style>
-      </div>
-    );
-  });
+          `}</style>
+        </div>
+      );
+    });
+  };
 
   const handlePlay = () => {
     if (audioRef.current) {
@@ -146,7 +121,7 @@ export default function Home() {
           isPlaying ? styles.playing : ''
         }`}
       >
-        {rings}
+        {isPlaying && renderRings()}
       </div>
     </div>
   );

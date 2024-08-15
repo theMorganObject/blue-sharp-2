@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background-color: #000; // Dark background
+  background-color: #000;
 
   button {
     z-index: 1;
@@ -35,49 +35,35 @@
 
     &.playing {
       .ring {
-        animation: fadeInOut 27s linear infinite; // Use 'linear' for even expansion
+        animation: fadeInOut 27s linear infinite;
       }
     }
 
     .ring {
       position: absolute;
       border-radius: 50%;
-      width: 100px; // Initial size for testing
-      height: 100px; // Initial size for testing
-      // can we implement a random range of border sizes, between 3 and 9 px?
-      border: 8px solid; // Creates the ring shape
-      border-color: rgba(0, 0, 255, 0.7); // Apply the blue color to the border
-      background-color: transparent; // Ensure the center is transparent
+      border: 8px solid transparent; // Ensures the border color is applied dynamically
+      background-color: transparent;
       box-sizing: border-box;
       filter: blur(5px);
       opacity: 0;
       animation-fill-mode: forwards;
-      animation-name: fadeInOut;
-      transform: translate(-50%, -50%);
-    }
-
-    @for $i from 1 through 3 {
-      .ring:nth-child(#{$i}) {
-        animation-delay: #{random(
-            27
-          )}s; // Random delay within the 27-second range
-      }
     }
   }
+}
 
-  @keyframes fadeInOut {
-    0% {
-      opacity: 0;
-      transform: scale(0.8);
-    }
-    37.04% {
-      opacity: 0.9; // Longer fade-in time (10 seconds of 27 seconds)
-      transform: scale(1.4); // Continuous scaling without pausing
-    }
-    100% {
-      opacity: 0; // Fade out while continuing to scale
-      transform: scale(2);
-      filter: blur(10px);
-    }
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  37.04% {
+    opacity: 0.9;
+    transform: scale(1.4);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2);
+    filter: blur(10px);
   }
 }
