@@ -16,7 +16,7 @@ export default function Home() {
   const [fadeOut, setFadeOut] = useState(false); // State to handle fade out
 
   const generateRandomSize = () => {
-    const size = Math.floor(Math.random() * 200) + 100;
+    const size = Math.floor(Math.random() * 100) + 100;
     return { width: `${size}px`, height: `${size}px` };
   };
 
