@@ -97,32 +97,28 @@ export default function Home() {
     }
   }, [isPlaying]);
 
-  const handlePlay = () => {
+  const handleTogglePlay = () => {
     if (audioRef.current) {
-      audioRef.current.play();
-      setIsPlaying(true);
-      setRing(generateRing()); // Generate the first ring immediately
-    }
-  };
-
-  const handlePause = () => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      setIsPlaying(false);
+      if (isPlaying) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        audioRef.current.play();
+        setIsPlaying(true);
+        setRing(generateRing());
+      }
     }
   };
 
   return (
-    <div className={styles.watercolorContainer}>
+    <div className={styles.watercolorContainer} onClick={handleTogglePlay}>
       <audio
         ref={audioRef}
         src='/audio/blue-sharp-2.wav'
-        onPlay={handlePlay}
-        onPause={handlePause}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
       />
-      <button onClick={isPlaying ? handlePause : handlePlay}>
-        {isPlaying ? 'Pause' : 'Play'}
-      </button>
+      <div className={styles.playPauseText}>{isPlaying ? 'Pause' : 'Play'}</div>
       <div className={styles.watercolorRings}>{ring}</div>
     </div>
   );
