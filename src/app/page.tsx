@@ -12,7 +12,8 @@ import {
 export default function Home() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [ring, setRing] = useState<JSX.Element | null>(null); // State to hold the single ring
+  const [ring, setRing] = useState<JSX.Element | null>(null);
+  const [fadeOut, setFadeOut] = useState(false); // State to handle fade out
 
   const generateRandomSize = () => {
     const size = Math.floor(Math.random() * 200) + 100;
@@ -107,6 +108,7 @@ export default function Home() {
         setIsPlaying(true);
         setRing(generateRing());
       }
+      setFadeOut((prev) => !prev); // Toggle fade state
     }
   };
 
@@ -118,7 +120,11 @@ export default function Home() {
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
       />
-      <div className={styles.playPauseText}>{isPlaying ? 'Pause' : 'Play'}</div>
+      <div
+        className={`${styles.playPauseText} ${fadeOut ? styles.fadeOut : ''}`}
+      >
+        {isPlaying ? 'Pause' : 'Play'}
+      </div>
       <div className={styles.watercolorRings}>{ring}</div>
     </div>
   );
