@@ -32,23 +32,17 @@
     display: flex;
     justify-content: center;
     align-items: center;
+  }
 
-    &.playing {
-      .ring {
-        animation: fadeInOut 27s linear infinite;
-      }
-    }
-
-    .ring {
-      position: absolute;
-      border-radius: 50%;
-      border: 8px solid transparent; // Ensures the border color is applied dynamically
-      background-color: transparent;
-      box-sizing: border-box;
-      filter: blur(5px);
-      opacity: 0;
-      animation-fill-mode: forwards;
-    }
+  .ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 5px solid;
+    background-color: transparent;
+    box-sizing: border-box;
+    filter: blur(5px);
+    // opacity: 0; /* Ensure rings start with 0 opacity */
+    animation-fill-mode: forwards;
   }
 }
 
@@ -58,7 +52,7 @@
     transform: scale(0.8);
   }
   37.04% {
-    opacity: 0.9;
+    opacity: 1;
     transform: scale(1.4);
   }
   100% {
