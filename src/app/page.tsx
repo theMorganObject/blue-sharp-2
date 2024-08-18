@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import styles from './page.module.scss';
 import {
   bluePalette,
@@ -12,16 +12,10 @@ import {
 export default function Home() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [rings, setRings] = useState<JSX.Element[]>([]);
-
-  const generateRandomPosition = () => {
-    const top = Math.floor(Math.random() * 100);
-    const left = Math.floor(Math.random() * 100);
-    return { top: `${top}%`, left: `${left}%` };
-  };
+  const [ring, setRing] = useState<JSX.Element | null>(null); // State to hold the single ring
 
   const generateRandomSize = () => {
-    const size = Math.floor(Math.random() * 200) + 40;
+    const size = Math.floor(Math.random() * 200) + 100;
     return { width: `${size}px`, height: `${size}px` };
   };
 
@@ -33,34 +27,37 @@ export default function Home() {
     return palette[Math.floor(Math.random() * palette.length)];
   };
 
-  const generateRing = (i: number) => {
-    const position = generateRandomPosition();
+  const generateRing = () => {
     const size = generateRandomSize();
     const borderWidth = generateRandomBorderWidth();
     const blueColor = generateRandomColor(bluePalette);
     const indigoColor = generateRandomColor(indigoPalette);
     const cyanColor = generateRandomColor(cyanPalette);
     const dropShadowColor = generateRandomColor(combinedPalette);
-    const animationName = `fadeInOut-${i}-${Math.random()}`;
 
     const style = {
-      ...position,
       ...size,
       borderWidth: `${borderWidth}px`,
       borderColor: blueColor,
       backgroundColor: 'transparent',
-      animationName,
+      animationName: 'fadeInOut',
       animationTimingFunction: 'linear',
       animationDuration: '27s',
-      animationIterationCount: '1',
+      animationIterationCount: 'infinite',
       animationFillMode: 'forwards',
       filter: `blur(5px) drop-shadow(0 0 10px ${dropShadowColor})`,
-    };
+      position: 'absolute' as 'absolute',
+      transform: 'translate(-50%, -50%)',
+    } as React.CSSProperties;
 
     return (
-      <div key={`${i}-${Math.random()}`} className={styles.ring} style={style}>
+      <div
+        key={`center-ring-${Math.random()}`}
+        className={styles.ring}
+        style={style}
+      >
         <style jsx>{`
-          @keyframes ${animationName} {
+          @keyframes fadeInOut {
             0% {
               opacity: 0;
               transform: scale(0.8);
@@ -88,20 +85,23 @@ export default function Home() {
     );
   };
 
+  useEffect(() => {
+    if (isPlaying) {
+      const intervalId = setInterval(() => {
+        setRing(generateRing());
+      }, 27000); // Update ring every 27 seconds
+
+      return () => clearInterval(intervalId); // Cleanup on unmount or pause
+    } else {
+      setRing(null);
+    }
+  }, [isPlaying]);
+
   const handlePlay = () => {
     if (audioRef.current) {
       audioRef.current.play();
       setIsPlaying(true);
-
-      const generatedRings = Array.from({ length: 27 }, (_, i) =>
-        generateRing(i)
-      );
-
-      generatedRings.forEach((ring, i) => {
-        setTimeout(() => {
-          setRings((prevRings) => [...prevRings, ring]);
-        }, i * 9000);
-      });
+      setRing(generateRing()); // Generate the first ring immediately
     }
   };
 
@@ -109,7 +109,6 @@ export default function Home() {
     if (audioRef.current) {
       audioRef.current.pause();
       setIsPlaying(false);
-      setRings([]);
     }
   };
 
@@ -124,7 +123,7 @@ export default function Home() {
       <button onClick={isPlaying ? handlePause : handlePlay}>
         {isPlaying ? 'Pause' : 'Play'}
       </button>
-      <div className={styles.watercolorRings}>{rings}</div>
+      <div className={styles.watercolorRings}>{ring}</div>
     </div>
   );
 }
