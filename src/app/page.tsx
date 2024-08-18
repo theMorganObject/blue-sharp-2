@@ -88,11 +88,18 @@ export default function Home() {
 
   useEffect(() => {
     if (isPlaying) {
-      const intervalId = setInterval(() => {
-        setRing(generateRing());
-      }, 27000); // Update ring every 27 seconds
+      const initialDelay = 1800; // 1.8 second delay for 1st ring
 
-      return () => clearInterval(intervalId); // Cleanup on unmount or pause
+      const timeoutId = setTimeout(() => {
+        setRing(generateRing());
+        const intervalId = setInterval(() => {
+          setRing(generateRing());
+        }, 27000); // Update ring every 27 seconds
+
+        return () => clearInterval(intervalId); // Cleanup on unmount or pause
+      }, initialDelay);
+
+      return () => clearTimeout(timeoutId); // Cleanup timeout on unmount or pause
     } else {
       setRing(null);
     }
@@ -106,7 +113,6 @@ export default function Home() {
       } else {
         audioRef.current.play();
         setIsPlaying(true);
-        setRing(generateRing());
       }
       setFadeOut((prev) => !prev); // Toggle fade state
     }
