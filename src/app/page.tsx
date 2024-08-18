@@ -116,7 +116,7 @@ export default function Home() {
     <div className={styles.watercolorContainer} onClick={handleTogglePlay}>
       <audio
         ref={audioRef}
-        src='/audio/blue-sharp-2.wav'
+        src='/audio/blue-sharp-2.mp3'
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
       />
