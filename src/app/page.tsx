@@ -12,12 +12,20 @@ import {
 export default function Home() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [ring, setRing] = useState<JSX.Element | null>(null);
-  const [fadeOut, setFadeOut] = useState(false); // State to handle fade out
+  const [mainRing, setMainRing] = useState<JSX.Element | null>(null);
+  const [extraRing, setExtraRing] = useState<JSX.Element | null>(null);
+  const [thirdRing, setThirdRing] = useState<JSX.Element | null>(null);
+  const [fadeOut, setFadeOut] = useState(false);
 
   const generateRandomSize = () => {
     const size = Math.floor(Math.random() * 100) + 100;
     return { width: `${size}px`, height: `${size}px` };
+  };
+
+  const generateRandomPosition = () => {
+    const top = Math.floor(Math.random() * 80) + 10; // Random top position between 10% and 90%
+    const left = Math.floor(Math.random() * 80) + 10; // Random left position between 10% and 90%
+    return { top: `${top}%`, left: `${left}%` };
   };
 
   const generateRandomBorderWidth = () => {
@@ -28,7 +36,7 @@ export default function Home() {
     return palette[Math.floor(Math.random() * palette.length)];
   };
 
-  const generateRing = () => {
+  const generateRing = (isExtra: boolean = false) => {
     const size = generateRandomSize();
     const borderWidth = generateRandomBorderWidth();
     const blueColor = generateRandomColor(bluePalette);
@@ -36,8 +44,11 @@ export default function Home() {
     const cyanColor = generateRandomColor(cyanPalette);
     const dropShadowColor = generateRandomColor(combinedPalette);
 
+    const positionStyle = isExtra ? generateRandomPosition() : {};
+
     const style = {
       ...size,
+      ...positionStyle,
       borderWidth: `${borderWidth}px`,
       borderColor: blueColor,
       backgroundColor: 'transparent',
@@ -52,11 +63,7 @@ export default function Home() {
     } as React.CSSProperties;
 
     return (
-      <div
-        key={`center-ring-${Math.random()}`}
-        className={styles.ring}
-        style={style}
-      >
+      <div key={`ring-${Math.random()}`} className={styles.ring} style={style}>
         <style jsx>{`
           @keyframes fadeInOut {
             0% {
@@ -88,20 +95,46 @@ export default function Home() {
 
   useEffect(() => {
     if (isPlaying) {
-      const initialDelay = 1800; // 1.8 second delay for 1st ring
+      const initialDelay = 1800; // 1.8 second delay for 1st ring to sync with music
 
-      const timeoutId = setTimeout(() => {
-        setRing(generateRing());
-        const intervalId = setInterval(() => {
-          setRing(generateRing());
-        }, 27000); // Update ring every 27 seconds
+      const mainTimeoutId = setTimeout(() => {
+        setMainRing(generateRing());
+        const mainIntervalId = setInterval(() => {
+          setMainRing(generateRing());
+        }, 27000);
 
-        return () => clearInterval(intervalId); // Cleanup on unmount or pause
+        return () => clearInterval(mainIntervalId);
       }, initialDelay);
 
-      return () => clearTimeout(timeoutId); // Cleanup timeout on unmount or pause
+      const extraRingDelay = 60000;
+      const extraTimeoutId = setTimeout(() => {
+        setExtraRing(generateRing(true));
+        const extraIntervalId = setInterval(() => {
+          setExtraRing(generateRing(true));
+        }, 27000);
+
+        return () => clearInterval(extraIntervalId);
+      }, extraRingDelay);
+
+      const thirdRingDelay = 142000;
+      const thirdTimeoutId = setTimeout(() => {
+        setThirdRing(generateRing(true));
+        const thirdIntervalId = setInterval(() => {
+          setThirdRing(generateRing(true));
+        }, 27000);
+
+        return () => clearInterval(thirdIntervalId);
+      }, thirdRingDelay);
+
+      return () => {
+        clearTimeout(mainTimeoutId);
+        clearTimeout(extraTimeoutId);
+        clearTimeout(thirdTimeoutId);
+      };
     } else {
-      setRing(null);
+      setMainRing(null);
+      setExtraRing(null);
+      setThirdRing(null);
     }
   }, [isPlaying]);
 
@@ -114,7 +147,7 @@ export default function Home() {
         audioRef.current.play();
         setIsPlaying(true);
       }
-      setFadeOut((prev) => !prev); // Toggle fade state
+      setFadeOut((prev) => !prev);
     }
   };
 
@@ -131,7 +164,11 @@ export default function Home() {
       >
         {isPlaying ? 'Pause' : 'Play'}
       </div>
-      <div className={styles.watercolorRings}>{ring}</div>
+      <div className={styles.watercolorRings}>
+        {mainRing}
+        {extraRing}
+        {thirdRing}
+      </div>
     </div>
   );
 }
