@@ -19,9 +19,9 @@ The music, recorded in one take, triggers three different animated "rings" that 
 ## Screenshots
 
 ![Start Screen](./screenshots/start.png)
-![Single Ring](./screenshots/single.gif)
-![Double Rings](./screenshots/double.gif)
-![Triple Rings](./screenshots/triple.gif)
+![Single Ring](./screenshots/single.png)
+![Double Rings](./screenshots/double.png)
+![Triple Rings](./screenshots/triple.png)
 
 ## Technologies Used
 
